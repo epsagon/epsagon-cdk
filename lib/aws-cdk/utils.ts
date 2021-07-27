@@ -15,7 +15,7 @@ import {
 
 export function createEpsagonConf(props: AnyEpsagonAwsCdkFunctionProps): EpsagonConfig {
     let epsagonConf: ObjectKeys = {};
-    (['token', 'appName', 'metadataOnly', 'disable', 'collectorURL'] as const)
+    (['token', 'appName', 'metadataOnly', 'debug', 'disable', 'collectorURL'] as const)
         .forEach(p => {
             epsagonConf[p] = props[p];
             delete props[p];
@@ -55,8 +55,9 @@ export function instrumentFunction(funcProps: AnyEpsagonAwsCdkFunctionProps): An
     console.log(codeOriginal)
     switch (codeOriginal.constructor) {
         case InlineCode:
-            codeWrapped = wrapper(funcPropsMut, epsagonConf);
-            funcPropsMut.code = new InlineCode(codeWrapped);
+            codeWrapped = wrapper(funcPropsMut, epsagonConf, (codeOriginal as any).code);
+            // funcPropsMut.code = new InlineCode(codeWrapped);
+            funcPropsMut.code = Code.fromInline(codeWrapped);
             break;
         case S3Code:
         case AssetCode:

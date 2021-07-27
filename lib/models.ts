@@ -9,6 +9,7 @@ export interface EpsagonConfig {
     readonly token?: string;
     readonly appName?: string;
     readonly metadataOnly?: boolean;
+    readonly debug?: boolean,
     readonly disable?: boolean;
     readonly collectorURL?: string;
     readonly wrapper?: string;

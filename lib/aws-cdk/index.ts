@@ -1,6 +1,8 @@
-import { Construct } from '@aws-cdk/core';
-import { EpsagonAwsCdkFunctionProps } from "./models";
-import {instrumentFunction} from "./utils";
+import { Construct, Stack } from '@aws-cdk/core';
+import {
+    EpsagonAwsCdkFunctionProps, EpsagonAwsCdkSingletonFunctionProps
+} from "./models";
+import { instrumentFunction } from "./utils";
 import {
     Function as AwsCdkFunction,
     SingletonFunction as AwsCdkSingletonFunction,
@@ -21,9 +23,16 @@ export class EpsagonFunction extends Construct {
     console.log( <AwsCdkFunctionProps> props)
     new AwsCdkFunction(this, id, <AwsCdkFunctionProps> props);
 
-    // Define construct contents here
   }
 }
+
+// export class EpsagonStack extends Stack {
+//     constructor(scope: Construct, id: string, props: EpsagonAwsCdkSingletonFunctionProps) {
+//         super(props);
+//
+//     }
+//
+// }
 
 // export class EpsagonSingletonFunction extends Construct {
 //

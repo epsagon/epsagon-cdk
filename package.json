@@ -4,16 +4,39 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "lint": "tslint 'lib/**/*.ts{,x}'",
+    "build": "tsc && jsii",
     "watch": "tsc -w",
-    "test": "jest"
+    "package": "jsii-pacmak -v",
+    "test": "jest",
+    "deploy": "./scripts/deploy.sh"
+  },
+  "jsii": {
+    "outdir": "dist",
+    "targets": {
+      "java": {
+        "package": "com.epsagon.cdk",
+        "maven": {
+          "groupId": "com.epsagon.cdk",
+          "artifactId": "epsagon"
+        }
+      },
+      "dotnet": {
+        "namespace": "Epsagon.Cdk",
+        "packageId": "Epsagon.Cdk"
+      },
+      "sphinx": { }
+    }
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.109.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "jest": "^26.4.2",
+    "jsii": "^1.32.0",
+    "jsii-pacmak": "^1.32.0",
     "ts-jest": "^26.2.0",
+    "tslint": "^6.1.3",
     "typescript": "~3.9.7"
   },
   "peerDependencies": {
