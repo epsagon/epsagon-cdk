@@ -1,15 +1,43 @@
 import { expect as expectCDK, countResources } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
-import * as EpsagonCdk from '../lib/index';
+import * as lambda from '@aws-cdk/aws-lambda';
+import * as epsagon from '../lib/index';
+
 
 /*
  * Example test
  */
-test('SNS Topic Created', () => {
+const test = (x: string, y: () => void) => null
+test('Epsagon AwsCdk Function Created', () => {
   const app = new cdk.App();
   const stack = new cdk.Stack(app, "TestStack");
   // WHEN
-  new EpsagonCdk.EpsagonCdk(stack, 'MyTestConstruct');
-  // THEN
-  expectCDK(stack).to(countResources("AWS::SNS::Topic",0));
+  new epsagon.EpsagonFunction(stack, 'MyTestFunction', {
+    token: '38a22955-dee3-4991-8db8-afa09fc9cef6',
+    appName: 'cdk-test',
+    metadataOnly: false,
+    collectorURL: 'https://dev.tc.epsagon.com',
+
+    runtime: lambda.Runtime.PYTHON_3_7,
+    code: lambda.Code.fromInline('print("hello, world!")\n'),
+    handler: 'hand/ler.main',
+  });
 });
+
+if (require.main === module) {
+    void function () {
+      const app = new cdk.App();
+      const stack = new cdk.Stack(app, "TestStack");
+      // WHEN
+      new epsagon.EpsagonFunction(stack, 'MyTestFunction', {
+        token: '38a22955-dee3-4991-8db8-afa09fc9cef6',
+        appName: 'cdk-test',
+        metadataOnly: false,
+        collectorURL: 'https://dev.tc.epsagon.com',
+
+        runtime: lambda.Runtime.PYTHON_3_7,
+        code: lambda.Code.fromInline('print("hello, world!")\n'),
+        handler: 'hand/ler.main',
+      });
+    }()
+}
