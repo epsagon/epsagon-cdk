@@ -2,16 +2,17 @@
 
 import {
     AnyAwsCdkFunctionProps,
-    AnyEpsagonAwsCdkFunctionProps,
+    // AnyEpsagonAwsCdkFunctionProps,
 } from './aws-cdk/models';
 import {EpsagonConfig, Mut, ObjectKeys} from './models';
-import { RuntimeFamily, Code } from "@aws-cdk/aws-lambda";
+import { RuntimeFamily } from "@aws-cdk/aws-lambda";
 
 
 export function wrapper(
     funcProps: Mut<AnyAwsCdkFunctionProps>, config: EpsagonConfig, originalCode: string,
-): string {
+) {
     let wrapperCode: string;
+    let fileExt: string;
 
     // const handler = funcProps.handler.split('.');
     // const relPath = handler.slice(0, -1).join('.');
@@ -22,17 +23,15 @@ export function wrapper(
     } = deconstructHandler(funcProps.handler)
 
 
-    //from ${(<string> relPath)
-    //     .split('/')
-    //      .join('.')} import ${methodName} as ${methodName}_internal
-    //    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(${methodName}_internal)
-
     switch (funcProps.runtime.family) {
         case RuntimeFamily.PYTHON:
             // funcProps.handler =
 
             //
+            fileExt = 'py';
             wrapperCode = `\n
+
+${originalCode}
 
 try:
     import os
@@ -45,14 +44,14 @@ try:
         collector_url='${config.collectorURL}',
         metadata_only=bool('${config.metadataOnly}'),
     )
-    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(lambda (event, context): ${originalCode})
+    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(${methodName})
 except:
     print('Warning: Epsagon package not found. The Function will not be monitored.')
     `;
             break;
 
         case RuntimeFamily.NODEJS:
-
+            fileExt = 'js';
             wrapperCode = `\n
 const epsagon = require('epsagon');
 const epsagonHandler = require('../${relPath}');
@@ -69,14 +68,22 @@ exports.${methodName} = epsagon.${config.wrapper}(epsagonHandler.${methodName});
             break;
 
         default:
+            fileExt = 'txt'
             wrapperCode = '';
             break;
     }
 
     console.log('wrapperCode::');
+    console.log(wrapperCode)
+    console.log()
+
+
     console.log(`language - ${funcProps.runtime.family}`);
-    console.log(wrapperCode);
-    return wrapperCode;
+    // console.log(wrapperCode);
+    return {
+        wrapperCode,
+        fileExt,
+    };
 }
 
 export function deconstructHandler(handler: string): ObjectKeys {

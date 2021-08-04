@@ -1,4 +1,4 @@
-import { expect as expectCDK, countResources } from '@aws-cdk/assert';
+// import { expect as expectCDK, countResources } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as epsagon from '../lib/index';

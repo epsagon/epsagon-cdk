@@ -1,11 +1,17 @@
 {
   "name": "epsagon-cdk",
+  "author": "Epsagon Team <support@epsagon.com>",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/epsagon/epsagon-cdk.git"
+  },
+  "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "lint": "tslint 'lib/**/*.ts{,x}'",
-    "build": "tsc && jsii",
+    "build": "jsii",
     "watch": "tsc -w",
     "package": "jsii-pacmak -v",
     "test": "jest",
@@ -25,7 +31,7 @@
         "namespace": "Epsagon.Cdk",
         "packageId": "Epsagon.Cdk"
       },
-      "sphinx": { }
+      "sphinx": {}
     }
   },
   "devDependencies": {
@@ -40,7 +46,8 @@
     "typescript": "~3.9.7"
   },
   "peerDependencies": {
-    "@aws-cdk/core": "1.109.0"
+    "@aws-cdk/core": "1.109.0",
+    "@aws-cdk/aws-lambda": "^1.115.0"
   },
   "dependencies": {
     "@aws-cdk/aws-lambda": "^1.115.0",

@@ -1,8 +1,9 @@
 
-import { expect as expectCDK, countResources } from '@aws-cdk/assert';
+// import { expect as expectCDK, countResources } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as epsagon from '../lib/index';
+import {App} from "@aws-cdk/core";
 
 
 class TestStack extends cdk.Stack {
@@ -10,7 +11,7 @@ class TestStack extends cdk.Stack {
     super(scope, id, props);
 
 
-    const func = new epsagon.EpsagonFunction(this, 'Producer', {
+    new epsagon.EpsagonFunction(this, 'Producer', {
         token: '38a22955-dee3-4991-8db8-afa09fc9cef6',
         appName: 'cdk-test',
         metadataOnly: false,
@@ -18,13 +19,29 @@ class TestStack extends cdk.Stack {
         collectorURL: 'https://dev.tc.epsagon.com',
 
         runtime: lambda.Runtime.PYTHON_3_7,
-        code: lambda.Code.fromInline('print("hello, world!")\n'),
-        handler: 'hand/ler.main',
+        code: lambda.Code.fromInline('def foo(event, context):\n\tprint(\'hello world!\')'),
+        handler: 'main.foo',
         // environment: {region: 'us-east-2'}
     })
   }
 }
 
+const app = new App();
+new TestStack(app, 'AnaTestStack', {
+     env: {region: 'us-east-2'}
+})
+// new epsagon.EpsagonFunction(stack, 'MyTestFunction', {
+//     token: '38a22955-dee3-4991-8db8-afa09fc9cef6',
+//     appName: 'cdk-test',
+//     metadataOnly: false,
+//     debug: true,
+//     collectorURL: 'https://dev.tc.epsagon.com',
+//
+//     runtime: lambda.Runtime.PYTHON_3_7,
+//     code: lambda.Code.fromInline('print("hello, world!")\n'),
+//     handler: 'hand/ler.main',
+//     // environment: {region: 'us-east-2'}
+//   });
 //   const app = new cdk.App();
 //   const stack = new cdk.Stack(app, "TestStack", {
 //     env: {region: 'us-east-2'}

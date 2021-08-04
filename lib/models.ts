@@ -1,10 +1,8 @@
 
-// import {EpsagonFunction, EpsagonSingletonFunction} from "./index";
-// import { EpsagonConfig } from './config';
-
-import {EpsagonAwsCdkFunctionProps}
-    from "./aws-cdk/models";
-
+/**
+ * EpsagonConfig: interface
+ *  - object representing tracer configuration
+ */
 export interface EpsagonConfig {
     readonly token?: string;
     readonly appName?: string;
@@ -16,7 +14,16 @@ export interface EpsagonConfig {
 }
 
 
+/**
+ * Mut<T>: mutable
+ * turns all fields of T to mutable
+ * :param T: type of initial object pre-mutation
+ * :return Mut<T>: mutable copy of the same object T
+ */
 export type Mut<T> = { -readonly [key in keyof T]: T[key] }
+/**
+ *
+ */
 export type Immut<T> = { +readonly [key in keyof T]: T[key] }
 
 
