@@ -3,7 +3,7 @@ import {
     FunctionProps as AwsFunctionProps,
     SingletonFunctionProps as AwsSingletonFunctionProps
 } from '@aws-cdk/aws-lambda';
-import { EpsagonConfig } from '../models';
+import { EpsagonConfig } from '../../models';
 
 /**
  * interface EpsagonAwsCdkFunctionProps

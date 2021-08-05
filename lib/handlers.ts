@@ -3,7 +3,7 @@
 import {
     AnyAwsCdkFunctionProps,
     // AnyEpsagonAwsCdkFunctionProps,
-} from './aws-cdk/models';
+} from './contrib/aws-cdk/models';
 import {EpsagonConfig, Mut, ObjectKeys} from './models';
 import { RuntimeFamily } from "@aws-cdk/aws-lambda";
 
@@ -40,7 +40,7 @@ try:
     epsagon.init(
         token='${config.token}',
         app_name='${config.appName}',
-        debug=bool('${config.debug}')
+        debug=bool('${config.debug}'),
         collector_url='${config.collectorURL}',
         metadata_only=bool('${config.metadataOnly}'),
     )
@@ -89,7 +89,11 @@ exports.${methodName} = epsagon.${config.wrapper}(epsagonHandler.${methodName});
 export function deconstructHandler(handler: string): ObjectKeys {
     const handlerSplit = handler.split('.');
     const relPath = handlerSplit.slice(0, -1).join('.');
+
     const [ methodName ] = handlerSplit.slice(-1);
+    console.log('DECONSTRUCTING HANDLER')
+
+    console.log({relPath, methodName})
     return {
         relPath,
         methodName,
