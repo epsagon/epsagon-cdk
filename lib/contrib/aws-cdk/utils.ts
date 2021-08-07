@@ -11,23 +11,22 @@ import {
     S3Code, AssetCode,
 } from '@aws-cdk/aws-lambda';
 import { promisify } from 'util';
+
 import * as fs from 'fs';
 import { join as pathJoin } from 'path';
 
-function debugLog(...m: string[]) {
-    console.log(
-        '[EPSAGON]',
-        ...m,
-    )
-}
 
+const writeFile = promisify(fs.writeFile);
+const mv = promisify(fs.rename);
 const mkdir = (handlerPath: string) => {
     try {
         fs.mkdirSync(handlerPath);
     } catch (err) {
-        debugLog(err.message)
+        // if (err instanceof )
+        console.error(err.message)
     }
 }
+
 // const rm = (dirPath: string) =>
 //     fs.rmdir(dirPath, (err) => {
 //         if (err) {
@@ -36,7 +35,6 @@ const mkdir = (handlerPath: string) => {
 //         }
 //     });
 
-const writeFile = promisify(fs.writeFile);
 
 const writeHandler = (
     {funcInfo, fileConf}:
@@ -60,7 +58,9 @@ const writeHandler = (
             `${handlerPath}.${fileConf.fileExt}`,
             fileConf.wrapperCode,
         )
-    ).then(r => r).catch(err => console.error(err));
+    )
+        .then(r => r)
+        .catch(err => console.error(err));
     console.log('wrote to ', pathJoin(
                 EPSAGON_HANDLERS_DIR,
                 `${funcName}.${fileConf.fileExt}`,
@@ -71,7 +71,7 @@ const writeHandler = (
     console.log(funcInfo.handler)
 
     const { methodName:  handlerMethodName} = deconstructHandler(funcInfo.handler);
-    return `${handlerPath}.${handlerMethodName}`
+    return `${funcName}.${handlerMethodName}`
 }
 
 // function cleanUp() {
@@ -82,6 +82,7 @@ const writeHandler = (
 
 export function createEpsagonConf(props: AnyEpsagonAwsCdkFunctionProps): EpsagonConfig {
     let epsagonConf: ObjectKeys = {};
+    // Object.keys(props as EpsagonConfig).map(e => console.log(e));
     ([
         'token',
         'appName',
