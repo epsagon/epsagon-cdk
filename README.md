@@ -1,12 +1,14 @@
 
-<p align="center">
-  <a href="https://epsagon.com" target="_blank" align="center">
-    <img src="https://cdn2.hubspot.net/hubfs/4636301/Positive%20RGB_Logo%20Horizontal%20-01.svg" width="300">
-  </a>
-  <br />
-</p>
+<div style="background-color:#Bac7d2;border-radius: 25px">
+ <p align="center">
+   <a href="https://epsagon.com" target="_blank" align="center">
+     <img src="https://cdn2.hubspot.net/hubfs/4636301/Positive%20RGB_Logo%20Horizontal%20-01.svg" width="300">
+   </a>
+   <br />
+ </p>
+</div>
 
-# Epsagon Tracing for IaC
+# Epsagon Tracing for CDKs
 
 This package provides distributed tracing for Infrastructure as Code applications using [Epsagon](https://app.epsagon.com).
 
@@ -15,6 +17,7 @@ This package provides distributed tracing for Infrastructure as Code application
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Integrations](#cdk-integrations)
 - [Configuration](#configuration)
 
 
@@ -47,31 +50,51 @@ Initialize the Tracer right inside your function declaration.
 
 #### Typescript
 
-Replace `lambda.Function` with `EpsagonFunction`
+Replace `lambda.Function` with `epsagon-cdk.LambdaFunction`
  and add Epsagon configuration directly to your function options.
 
 ```typescript
-import { EpsagonFunction, EpsagonSingletonFunction } from 'epsagon-cdk'
+import { LambdaFunction, LambdaSingletonFunction } from 'epsagon-cdk'
 
-/*  ...  */
-new EpsagonFunction(this, '<FUNC-ID>', {
+new LambdaFunction(this, '<FUNC-ID>', {
 
     /*  function options  */
     functionName: '<FUNC-NAME>',
     runtime: lambda.Runtime.<RUNTIME>,
-    code: lambda.Code.fromInline('def fooNorm(*_):\n    print(333)'),
+    code: lambda.Code.fromAsset(path.join(__dirname, '/PATH/TO/FUNC/DIR')),
     handler: '<HANDLER>',
 
     /*  epsagon tracing config  */
     token: '<EPSAGON-TOKEN>',
-    appName: '<EPSAGON-APP-NAME>',
-    metadataOnly: false,
-    debug: true,
-    disable: false,
-
-});
-
+    appName: '<EPSAGON-APP-NAME-STAGE>',
+    metadataOnly: <BOOL>,
+    debug: <BOOL>,
+    disable: <BOOL>,
+}); 
 ```
+
+`LambdaFunction` adds Epsagon as a dependency during bundle-time, increasing package size by no more than 1MB.
+
+Currently only `Python` and `Node.js` runtimes are available.
+
+## Integrations
+
+The following Cloud Development Kits are supported by Epsagon.
+
+| CDK     | Supported Version |
+|---------|-------------------|
+| [@aws-cdk](#@aws-cdk) | all               |
+
 
 
 ## Configuration
+
+Advanced options can be configured when declaring Epsagon resources.
+
+| Parameter    | Type    | Default               | Description                                                                         |   |
+|--------------|---------|-----------------------|-------------------------------------------------------------------------------------|---|
+| token        | string  | `''`                  | The User's Epsagon Account Token                                                    |   |
+| appName      | string  | `Epsagon Application` | Application the function belongs to.                                                |   |
+| metadataOnly | boolean | `true`                | Whether to capture Only Metadata. Set to `false` to capture entire payloads.        |   |
+| debug        | boolean | `false`               | Whether to print debug logs. Set to `true` to output logs, and `false` to not.      |   |
+| disable      | boolean | `false`               | Wether to disable Epsagon tracing. Set to `true` to disable, and `false` to enable. |   |
