@@ -15,10 +15,6 @@ export function wrapper(
     let fileExt: string;
     let bundleOpts: string;
 
-    // const handler = funcProps.handler.split('.');
-    // const relPath = handler.slice(0, -1).join('.');
-    // const [ methodName ] = handler.slice(-1);
-    // console.log(deconstructHandler(funcProps.handler))
     const {
         relPath, methodName,
     } = deconstructHandler(funcProps.handler)
@@ -50,7 +46,8 @@ try:
         collector_url='${config.collectorURL}',
         metadata_only=bool('${config.metadataOnly}'),
     )
-    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(${relPath}.${methodName})
+    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(${methodName})
+
 except:
     print('Warning: Epsagon package not found. The Function will not be monitored.')
     `;
@@ -60,6 +57,7 @@ except:
             fileExt = 'js';
             bundleOpts = [
                 'cd /asset-output',
+                'mkdir node_modules',
                 'npm i epsagon',
             ].join(' && ');
             wrapperCode = `\n
@@ -84,13 +82,6 @@ exports.${methodName} = epsagon.${config.wrapper}(epsagonHandler.${methodName});
             break;
     }
 
-    console.log('wrapperCode::');
-    console.log(wrapperCode)
-    console.log()
-
-
-    console.log(`language - ${funcProps.runtime.family}`);
-    // console.log(wrapperCode);
     return {
         wrapperCode,
         fileExt,
@@ -103,8 +94,6 @@ export function deconstructHandler(handler: string): ObjectKeys {
     const relPath = handlerSplit.slice(0, -1).join('.');
 
     const [ methodName ] = handlerSplit.slice(-1);
-    console.log('DECONSTRUCTING HANDLER')
-    console.log({relPath, methodName})
     return {
         relPath,
         methodName,
