@@ -1,7 +1,7 @@
 
 
 import {
-    AnyAwsCdkFunctionProps,
+    AnyFunctionProps,
     // AnyEpsagonAwsCdkFunctionProps,
 } from './contrib/aws-cdk/models';
 import {EpsagonConfig, Mut, ObjectKeys} from './models';
@@ -9,10 +9,11 @@ import { RuntimeFamily } from "@aws-cdk/aws-lambda";
 
 
 export function wrapper(
-    funcProps: Mut<AnyAwsCdkFunctionProps>, config: EpsagonConfig, originalCode: string,
+    funcProps: Mut<AnyFunctionProps>, config: EpsagonConfig, originalCode: string,
 ) {
     let wrapperCode: string;
     let fileExt: string;
+    let bundleOpts: string;
 
     // const handler = funcProps.handler.split('.');
     // const relPath = handler.slice(0, -1).join('.');
@@ -25,13 +26,18 @@ export function wrapper(
 
     switch (funcProps.runtime.family) {
         case RuntimeFamily.PYTHON:
-            // funcProps.handler =
-
-            //
             fileExt = 'py';
+            bundleOpts = [
+                'pip install epsagon -t /asset-output',
+                'cp -rT /asset-input /asset-output',
+            ].join(' && ');
             wrapperCode = `\n
 
-${originalCode}
+${
+    originalCode ? 
+        originalCode 
+    : 'import ' + relPath + ` \n${methodName} = ${relPath}.${methodName}\n`
+} 
 
 try:
     import os
@@ -44,7 +50,7 @@ try:
         collector_url='${config.collectorURL}',
         metadata_only=bool('${config.metadataOnly}'),
     )
-    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(${methodName})
+    ${methodName} = epsagon.${config.wrapper || 'lambda_wrapper'}(${relPath}.${methodName})
 except:
     print('Warning: Epsagon package not found. The Function will not be monitored.')
     `;
@@ -52,6 +58,10 @@ except:
 
         case RuntimeFamily.NODEJS:
             fileExt = 'js';
+            bundleOpts = [
+                'cd /asset-output',
+                'npm i epsagon',
+            ].join(' && ');
             wrapperCode = `\n
 const epsagon = require('epsagon');
 const epsagonHandler = require('../${relPath}');
@@ -70,6 +80,7 @@ exports.${methodName} = epsagon.${config.wrapper}(epsagonHandler.${methodName});
         default:
             fileExt = 'txt'
             wrapperCode = '';
+            bundleOpts = '';
             break;
     }
 
@@ -83,6 +94,7 @@ exports.${methodName} = epsagon.${config.wrapper}(epsagonHandler.${methodName});
     return {
         wrapperCode,
         fileExt,
+        bundleOpts,
     };
 }
 
@@ -92,7 +104,6 @@ export function deconstructHandler(handler: string): ObjectKeys {
 
     const [ methodName ] = handlerSplit.slice(-1);
     console.log('DECONSTRUCTING HANDLER')
-
     console.log({relPath, methodName})
     return {
         relPath,
