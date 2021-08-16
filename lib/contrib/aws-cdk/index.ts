@@ -12,6 +12,12 @@ import {
 } from '@aws-cdk/aws-lambda'
 
 
+export {
+    LambdaFunctionProps,
+    LambdaSingletonFunctionProps,
+}
+
+
 export class LambdaFunction extends Construct {
   constructor(scope: Construct, id: string, props: LambdaFunctionProps) {
     super(scope, id);
