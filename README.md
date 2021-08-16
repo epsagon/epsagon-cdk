@@ -46,11 +46,9 @@ Configuration options available at [Configurations](#configuration)
 
 Initialize the Tracer right inside your function declaration.
 
-<br />
-
 #### Typescript
 
-Replace `lambda.Function` with `epsagon-cdk.LambdaFunction`
+Replace `@aws-cdk-lambda.Function` with `epsagon-cdk.LambdaFunction`
  and add Epsagon configuration directly to your function options.
 
 ```typescript
@@ -75,7 +73,18 @@ new LambdaFunction(this, '<FUNC-ID>', {
 
 `LambdaFunction` adds Epsagon as a dependency during bundle-time, increasing package size by no more than 1MB.
 
-Currently only `Python` and `Node.js` runtimes are available.
+lambda.Runtimes supported:
+- `Runtime.PYTHON`
+- `Runtime.NODEJS`
+
+lambda.Codes supported:
+- `Code.InlineCode`
+- `Code.AssetCode`
+
+<!---
+Currently only `Python` and `Node.js` runtimes are available, 
+as well as `Code.fromAsset` & `Code.fromInline`.
+--->
 
 ## Integrations
 
@@ -83,7 +92,7 @@ The following Cloud Development Kits are supported by Epsagon.
 
 | CDK     | Supported Version |
 |---------|-------------------|
-| [@aws-cdk](#@aws-cdk) | all               |
+| [@aws-cdk](#aws-cdk) | all               |
 
 
 
@@ -93,7 +102,7 @@ Advanced options can be configured when declaring Epsagon resources.
 
 | Parameter    | Type    | Default               | Description                                                                         |   |
 |--------------|---------|-----------------------|-------------------------------------------------------------------------------------|---|
-| token        | string  | `''`                  | The User's Epsagon Account Token                                                    |   |
+| token        | string  | -                     | The User's Epsagon Account Token                                                    |   |
 | appName      | string  | `Epsagon Application` | Application the function belongs to.                                                |   |
 | metadataOnly | boolean | `true`                | Whether to capture Only Metadata. Set to `false` to capture entire payloads.        |   |
 | debug        | boolean | `false`               | Whether to print debug logs. Set to `true` to output logs, and `false` to not.      |   |
