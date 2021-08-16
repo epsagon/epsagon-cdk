@@ -68,12 +68,14 @@ const writeHandler = (
 export function createEpsagonConf(props: AnyLambdaFunctionProps): EpsagonConfig {
     let epsagonConf: ObjectKeys = {};
     /*
-     * typescript is not mature enough to collect keys of an interface
+     * typescript is not yet mature enough to collect keys of an interface
      * without first instantiating it as a class/object. This feature will one
      * day be added to typescript, at which point, we can remove this hardcoded list.
      *
      * Until that day - this is the ultimate source of truth as to which
      * epsagon configuration keys are collected.
+     * To add a new configuration key: Add it to EpsagonConf interface as optional,
+     * and copy the name to this list below as a string.
      */
     ([
         'token',
