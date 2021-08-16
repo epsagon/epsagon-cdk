@@ -1,4 +1,4 @@
 
 export {
-    EpsagonFunction, EpsagonSingletonFunction
+    LambdaFunction, LambdaSingletonFunction
 } from './contrib/aws-cdk';
