@@ -24,7 +24,6 @@
         "distName": "epsagon_cdk",
         "module": "epsagon_cdk"
       },
-
       "sphinx": {}
     }
   },
