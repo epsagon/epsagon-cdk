@@ -22,6 +22,8 @@ const mkdir = (handlerPath: string) => {
     try {
         fs.mkdirSync(handlerPath);
     } catch (err) {
+        if (err.code === 'EEXIST')
+            return
         console.error('Error creating dir')
         console.error(err.message);
     }
