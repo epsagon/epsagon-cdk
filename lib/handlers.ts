@@ -56,22 +56,36 @@ except:
         case RuntimeFamily.NODEJS:
             fileExt = 'js';
             bundleOpts = [
+                'cp -rT /asset-input /asset-output',
                 'cd /asset-output',
-                'mkdir node_modules',
+                'npm init -y',
                 'npm i epsagon',
             ].join(' && ');
             wrapperCode = `\n
-const epsagon = require('epsagon');
-const epsagonHandler = require('../${relPath}');
+            
+${
+    originalCode ?
+        originalCode
+    : 
+        `const epsagonHandler = require('../${relPath}');` + 
+        `\nexports.${methodName} = epsagonHandler.${methodName};`
+}
 
-epsagon.init({
-    token: '${config.token}',
-    appName: '${config.appName}',
-    traceCollectorURL: '${config.collectorURL}',
-    metadataOnly: Boolean('${config.metadataOnly}'),
-});
+try {
+    process.env.EPSAGON_DEBUG = '${config.debug}';
 
-exports.${methodName} = epsagon.${config.wrapper}(epsagonHandler.${methodName});
+    const epsagon = require('epsagon');
+    epsagon.init({
+        token: '${config.token}',
+        appName: '${config.appName}',
+        traceCollectorURL: '${config.collectorURL}',
+        metadataOnly: Boolean('${config.metadataOnly}'),
+    });
+    
+    exports.${methodName} = epsagon.${config.wrapper || 'lambdaWrapper'}(exports.${methodName});
+} catch (err) {
+    console.log('Warning: Epsagon package not found. The Function will not be monitored.');
+}
 `;
             break;
 
