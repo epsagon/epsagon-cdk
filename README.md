@@ -100,10 +100,11 @@ The following Cloud Development Kits are supported by Epsagon.
 
 Advanced options can be configured when declaring Epsagon resources.
 
-| Parameter    | Type    | Default               | Description                                                                         |   |
-|--------------|---------|-----------------------|-------------------------------------------------------------------------------------|---|
-| token        | string  | -                     | The User's Epsagon Account Token                                                    |   |
-| appName      | string  | `Epsagon Application` | Application the function belongs to.                                                |   |
-| metadataOnly | boolean | `true`                | Whether to capture Only Metadata. Set to `false` to capture entire payloads.        |   |
-| debug        | boolean | `false`               | Whether to print debug logs. Set to `true` to output logs, and `false` to not.      |   |
-| disable      | boolean | `false`               | Wether to disable Epsagon tracing. Set to `true` to disable, and `false` to enable. |   |
+| Parameter    | Type    | Default               | Description                                                                         |
+|--------------|---------|-----------------------|-------------------------------------------------------------------------------------|
+| token        | string  | -                     | The User's Epsagon Account Token                                                    |
+| appName      | string  | `Epsagon Application` | Application the function belongs to.                                                |
+| metadataOnly | boolean | `true`                | Whether to capture Only Metadata. Set to `false` to capture entire payloads.        |
+| debug        | boolean | `false`               | Whether to print debug logs. Set to `true` to output logs, and `false` to not.      |
+| disable      | boolean | `false`               | Wether to disable Epsagon tracing. Set to `true` to disable, and `false` to enable. |
+| collectorURL | string  | `tc`                  | You should know what you are doing.                               |
