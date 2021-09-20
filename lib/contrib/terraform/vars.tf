@@ -7,6 +7,7 @@ variable "function_name" {
 variable "handler" {
   description = ""
   type        = string
+
 }
 
 variable "role" {
@@ -21,6 +22,12 @@ variable "runtime" {
 }
 
 variable "filename" {
+  description = ""
+  type        = string
+  default     = null
+}
+
+variable "source_dir" {
   description = ""
   type        = string
   default     = null
@@ -122,5 +129,5 @@ variable "collector_url" {
 variable "epsagon_enabled" {
   description = ""
   type        = bool
-  default     = false
+  default     = true
 }
