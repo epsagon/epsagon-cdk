@@ -5,6 +5,7 @@ resource "aws_lambda_function" "main_traced" {
   handler          = local.epsagon_handler
   role             = var.role
   runtime          = var.runtime
+  timeout          = var.timeout
   layers           = concat(var.layers, [local.epsagon_layer_arn])
   filename         = data.archive_file.source.output_path
   source_code_hash = data.archive_file.source.output_base64sha256
@@ -17,6 +18,7 @@ resource "aws_lambda_function" "main_untraced" {
   handler          = var.handler
   role             = var.role
   runtime          = var.runtime
+  timeout          = var.timeout
   layers           = var.layers
   filename         = var.filename
   source_code_hash = data.archive_file.source.output_base64sha256

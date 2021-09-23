@@ -63,6 +63,12 @@ variable "layers" {
   default     = []
 }
 
+variable "timeout" {
+  description = ""
+  type        = number
+  default     = 3
+}
+
 variable "memory_size" {
   description = ""
   type        = string
