@@ -73,7 +73,9 @@ locals {
        */
 
 
-      const epsagonHandler = require('${local.handler_relative_path}');
+      const epsagonHandler = require('./${local.handler_relative_path}.${local.language_to_f_extensions[
+          local.runtime_to_language[var.runtime]
+        ]}');
       exports.${local.handler_method_name} = epsagonHandler.${local.handler_method_name};
 
       try {
