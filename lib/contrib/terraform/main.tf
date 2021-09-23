@@ -6,6 +6,7 @@ resource "aws_lambda_function" "main_traced" {
   role             = var.role
   runtime          = var.runtime
   timeout          = var.timeout
+  environment      = var.environment
   layers           = concat(var.layers, [local.epsagon_layer_arn])
   filename         = data.archive_file.source.output_path
   source_code_hash = data.archive_file.source.output_base64sha256
@@ -19,6 +20,7 @@ resource "aws_lambda_function" "main_untraced" {
   role             = var.role
   runtime          = var.runtime
   timeout          = var.timeout
+  environment      = var.environment
   layers           = var.layers
   filename         = var.filename
   source_code_hash = data.archive_file.source.output_base64sha256
@@ -27,18 +29,7 @@ resource "aws_lambda_function" "main_untraced" {
 
 
 
-data "aws_region" "current" {
-
-}
-
-data "http" "layer_arn" {
-  url = "https://layers.epsagon.com/production?region=${
-    data.aws_region.current.name
-    }&name=epsagon-${
-    local.runtime_to_language[var.runtime]
-  }-layer&max_items=1"
-}
-
+data "aws_region" "current" { }
 
 resource "local_file" "epsagon_handler" {
   content  = local.wrappers[local.runtime_to_language[var.runtime]]
