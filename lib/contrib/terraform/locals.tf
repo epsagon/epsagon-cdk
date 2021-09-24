@@ -93,6 +93,7 @@ locals {
       } catch (err) {
           console.log('Warning: Epsagon package not found. The Function will not be monitored.');
       }
+
       EOF
 
 "python" = <<-EOF
