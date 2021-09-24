@@ -95,6 +95,16 @@ variable "tags" {
   }
 }
 
+variable "environment" {
+  description = ""
+  type = map(string)
+  default = {
+    variables = {
+
+    }
+  }
+}
+
 
 variable "archive" {
   description = ""
@@ -132,8 +142,8 @@ variable "collector_url" {
   default     = "https://tc.epsagon.com"
 }
 
-variable "epsagon_enabled" {
+variable "disable" {
   description = ""
   type        = bool
-  default     = true
+  default     = false
 }

@@ -1,6 +1,6 @@
 
 resource "aws_lambda_function" "main_traced" {
-  count            = var.epsagon_enabled ? 1 : 0
+  count            = var.disable ? 0 : 1
   function_name    = var.function_name
   handler          = local.epsagon_handler
   role             = var.role
@@ -14,7 +14,7 @@ resource "aws_lambda_function" "main_traced" {
 }
 
 resource "aws_lambda_function" "main_untraced" {
-  count            = var.epsagon_enabled ? 0 : 1
+  count            = var.disable ? 1 : 0
   function_name    = var.function_name
   handler          = var.handler
   role             = var.role
@@ -26,8 +26,6 @@ resource "aws_lambda_function" "main_untraced" {
   source_code_hash = data.archive_file.source.output_base64sha256
 
 }
-
-
 
 data "aws_region" "current" { }
 
@@ -51,4 +49,3 @@ resource "aws_s3_bucket_object" "source" {
   bucket = local.deployments.archive_s3.bucket
   key    = local.deployments.archive_s3.key
 }
-
