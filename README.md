@@ -49,7 +49,7 @@ Initialize the Tracer right inside your function declaration.
 #### Typescript
 
 Replace `@aws-cdk-lambda.Function` with `epsagon-cdk.LambdaFunction`
- and add Epsagon configuration directly to your function options.
+ and add your Epsagon configuration directly to your function options.
 
 ```typescript
 import { LambdaFunction, LambdaSingletonFunction } from 'epsagon-cdk'
@@ -84,15 +84,74 @@ lambda.Codes supported:
 <!---
 Currently only `Python` and `Node.js` runtimes are available, 
 as well as `Code.fromAsset` & `Code.fromInline`.
+Any combination of these Runtimes and Codes will work.
 --->
+
+<br>
+
+### Terraform
+
+> Note: No NPM/PIP install is requred.
+
+
+Replace 
+    
+    aws_lambda_function 
+
+with epsagon's function module at 
+
+    github.com/epsagon/epsagon-cdk/lib/contrib/terraform
+
+(hint: you can copy and paste)
+
+verify your archive file
+
+```terraform
+data "archive_file" "<DEPLOYMENT>" {
+  type        = "zip"
+  output_path = "${path.module}/PATH/TO/DEPLOYMENT.zip"
+  source_dir  = "${path.module}/PATH/TO/DEPLOYMENT_DIR"
+}
+```
+
+and simply add your Epsagon configuration directly to your function options.
+
+```terraform
+module "epsagon_function" {
+
+    /*  EPSAGON MODULE SOURCE  */
+    source = "github.com/epsagon/epsagon-cdk/lib/contrib/terraform"
+  
+    /*  FUNC CONFIG  */
+    function_name = "<FUNC-NAME>"
+    handler       = "<HANDLER>"
+    runtime       = "RUNTIME"
+    role          = aws_iam_role.<ROLE>.arn
+    timeout       = TIMEOUT
+
+    /*  ARCHIVE CONFIG  */
+    /* add the source_dir of the archive */
+    source_dir       = data.archive_file.lambda_zip.source_dir
+    filename         = data.archive_file.DEPLOYMENT.output_path
+    source_code_hash = data.archive_file.DEPLOYMENT.output_base64sha256
+  
+
+    /*  EPSAGON CONFIG  */
+    token         = "<EPSAGON-TOKEN>"
+    app_name      = "<APP-NAME-STAGE>"
+    debug         = <BOOL>
+    metadata_only = <BOOL>
+}
+```
 
 ## Integrations
 
 The following Cloud Development Kits are supported by Epsagon.
 
-| CDK     | Supported Version |
+| IaC     | Supported Version |
 |---------|-------------------|
-| [@aws-cdk](#aws-cdk) | all               |
+| [@aws-cdk](#aws-cdk) | all  |
+| [Terraform](#terraform) | all  ||
 
 
 
