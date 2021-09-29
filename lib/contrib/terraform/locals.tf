@@ -74,8 +74,8 @@ locals {
 
 
       const epsagonHandler = require('./${local.handler_relative_path}.${local.language_to_f_extensions[
-    local.runtime_to_language[var.runtime]
-]}');
+          local.runtime_to_language[var.runtime]
+      ]}');
       exports.${local.handler_method_name} = epsagonHandler.${local.handler_method_name};
 
       try {
@@ -87,9 +87,10 @@ locals {
               appName: '${var.app_name}',
               traceCollectorURL: '${var.collector_url}',
               metadataOnly: ${var.metadata_only},
+              sendBatch: false,
           });
 
-          exports.${local.handler_method_name} = epsagon.lambdaWrapper(exports.${local.handler_method_name});
+          exports.${local.handler_method_name} = epsagon.lambdaWrapper(epsagonHandler.${local.handler_method_name});
       } catch (err) {
           console.log('Warning: Epsagon package not found. The Function will not be monitored.');
       }
